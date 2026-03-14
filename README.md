@@ -1,4 +1,4 @@
-# Funds — Prueba Técnica
+# Prueba Técnica
 
 Solución a la prueba técnica dividida en dos partes.
 

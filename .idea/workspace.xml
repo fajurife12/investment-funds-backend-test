@@ -4,62 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ea41125f-c1c4-4ce0-9e4d-7ed05e80520a" name="Changes" comment="Feat: Configuracion de Cloudformation para un posible despligue en AWS, y se agrega readme con todo lo implementado">
-      <change afterPath="$PROJECT_DIR$/sql/btg.db" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/btg.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloudformation/funds-stack.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/application/FundsApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/application/usecase/CancelFundUseCase.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/application/usecase/GetTransactionHistoryUseCase.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/application/usecase/SubscribeFundUseCase.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/domain/exception/DomainException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/domain/exception/ErrorCode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/domain/model/Client.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/domain/model/Fund.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/domain/model/FundCategory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/domain/model/Notification.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/domain/model/NotificationPreference.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/domain/model/Transaction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/domain/model/TransactionType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/domain/port/ClientRepositoryOutputPort.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/domain/port/FundRepositoryOutputPort.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/domain/port/NotificationOutputPort.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/domain/port/TransactionRepositoryOutputPort.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/adapter/notification/EmailAdapter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/adapter/notification/NotificationDispatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/adapter/notification/SmsAdapter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/adapter/persistence/ClientAdapter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/adapter/persistence/FundAdapter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/adapter/persistence/TransactionAdapter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/adapter/persistence/document/ClientDocument.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/adapter/persistence/document/FundDocument.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/adapter/persistence/document/TransactionDocument.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/adapter/persistence/repository/ClientRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/adapter/persistence/repository/FundRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/adapter/persistence/repository/TransactionRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/api/FundHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/api/FundRouter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/api/GlobalExceptionHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/api/dto/FundDtos.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/api/dto/FundMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/config/ApplicationConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/funds/infrastructure/config/DataInitializer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/funds/application/usecase/CancelFundUseCaseTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/funds/application/usecase/GetTransactionHistoryUseCaseTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/funds/application/usecase/SubscribeFundUseCaseTest.java" beforeDir="false" />
-    </list>
+    <list default="true" id="ea41125f-c1c4-4ce0-9e4d-7ed05e80520a" name="Changes" comment="Feat: Se configura repo para las dos partes de la prueba, backend y sql" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -386,7 +331,23 @@
       <option name="project" value="LOCAL" />
       <updated>1773531222869</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Feat: Se configura repo para las dos partes de la prueba, backend y sql">
+      <option name="closed" value="true" />
+      <created>1773532324899</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1773532324899</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Feat: Se configura repo para las dos partes de la prueba, backend y sql">
+      <option name="closed" value="true" />
+      <created>1773532357362</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1773532357362</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -399,6 +360,7 @@
     <MESSAGE value="Feat: Se configura infra, y se hace ajustes para temas de ejecucion del backend" />
     <MESSAGE value="Feat: Se agregan test a los casos de uso" />
     <MESSAGE value="Feat: Configuracion de Cloudformation para un posible despligue en AWS, y se agrega readme con todo lo implementado" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feat: Configuracion de Cloudformation para un posible despligue en AWS, y se agrega readme con todo lo implementado" />
+    <MESSAGE value="Feat: Se configura repo para las dos partes de la prueba, backend y sql" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feat: Se configura repo para las dos partes de la prueba, backend y sql" />
   </component>
 </project>
