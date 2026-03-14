@@ -25,11 +25,18 @@ public class Client {
         return activeFundIds != null && activeFundIds.contains(fundId);
     }
 
-    public Client Subribe(String fundId, BigDecimal amount) {
+    public Client subscribe(String fundId, BigDecimal amount) {
         var updateFunds = new ArrayList<>(activeFundIds != null ? activeFundIds : List.of());
         updateFunds.remove(fundId);
         return this.withBalance(this.balance.add(amount))
             .withActiveFundIds(updateFunds);
         
+    }
+
+    public Client unsubscribe(String fundId, BigDecimal amount) {
+        var updatedFunds = new ArrayList<>(activeFundIds != null ? activeFundIds : List.of());
+        updatedFunds.remove(fundId);
+        return this.withBalance(this.balance.add(amount))
+                .withActiveFundIds(updatedFunds);
     }
 }
