@@ -50,7 +50,10 @@ public class DataInitializer {
                                 .balance(new BigDecimal("500000"))
                                 .activeFundIds(new ArrayList<>())
                                 .build()))
-                .doOnSuccess(c -> log.info("Seeded test client: {}", c.getName()))
+                .doOnSuccess(c -> {
+                    assert c != null;
+                    log.info("Seeded test client: {}", c.getName());
+                })
                 .subscribe();
     }
 

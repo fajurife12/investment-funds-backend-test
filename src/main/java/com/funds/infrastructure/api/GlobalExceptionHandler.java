@@ -48,10 +48,9 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
     }
 
     private HttpStatus resolveStatus(Throwable ex) {
-        return Mono.just(ex)
-                .filter(e -> e instanceof DomainException)
-                .map(e -> ((DomainException) e).getErrorCode().getHttpStatus())
-                .blockOptional()
-                .orElse(HttpStatus.INTERNAL_SERVER_ERROR);
+        if (ex instanceof DomainException domainException) {
+            return domainException.getErrorCode().getHttpStatus();
+        }
+        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 }

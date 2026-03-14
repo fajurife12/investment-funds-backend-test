@@ -23,7 +23,6 @@ public class FundHandler {
     private final CancelFundUseCase cancelFundUseCase;
     private final GetTransactionHistoryUseCase getTransactionHistoryUseCase;
     private final FundRepository fundRepository;
-    private final TransactionResponse transactionResponse;
 
     public Mono<ServerResponse> listFunds(ServerRequest request) {
         return fundRepository.findAll()

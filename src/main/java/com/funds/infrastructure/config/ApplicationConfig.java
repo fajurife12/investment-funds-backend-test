@@ -3,6 +3,10 @@ package com.funds.infrastructure.config;
 import com.funds.application.usecase.CancelFundUseCase;
 import com.funds.application.usecase.GetTransactionHistoryUseCase;
 import com.funds.application.usecase.SubscribeFundUseCase;
+import com.funds.domain.port.ClientRepositoryOutputPort;
+import com.funds.domain.port.FundRepositoryOutputPort;
+import com.funds.domain.port.NotificationOutputPort;
+import com.funds.domain.port.TransactionRepositoryOutputPort;
 import com.funds.infrastructure.adapter.notification.EmailAdapter;
 import com.funds.infrastructure.adapter.notification.NotificationDispatcher;
 import com.funds.infrastructure.adapter.notification.SmsAdapter;
@@ -14,37 +18,39 @@ import com.funds.infrastructure.adapter.persistence.repository.FundRepository;
 import com.funds.infrastructure.adapter.persistence.repository.TransactionRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class ApplicationConfig {
 
     @Bean
-    public FundAdapter fundAdapter(FundRepository repository) {
+    public FundRepositoryOutputPort fundRepositoryOutputPort(FundRepository repository) {
         return new FundAdapter(repository);
     }
 
     @Bean
-    public ClientAdapter clientAdapter(ClientRepository repository) {
+    public ClientRepositoryOutputPort clientRepositoryOutputPort(ClientRepository repository) {
         return new ClientAdapter(repository);
     }
 
     @Bean
-    public TransactionAdapter transactionAdapter(TransactionRepository repository) {
+    public TransactionRepositoryOutputPort transactionRepositoryOutputPort(TransactionRepository repository) {
         return new TransactionAdapter(repository);
     }
 
     @Bean
-    public EmailAdapter emailNotificationAdapter() {
+    public EmailAdapter emailAdapter() {
         return new EmailAdapter();
     }
 
     @Bean
-    public SmsAdapter smsNotificationAdapter() {
+    public SmsAdapter smsAdapter() {
         return new SmsAdapter();
     }
 
     @Bean
-    public NotificationDispatcher notificationDispatcher(
+    @Primary
+    public NotificationOutputPort notificationOutputPort(
             EmailAdapter emailAdapter,
             SmsAdapter smsAdapter) {
         return new NotificationDispatcher(emailAdapter, smsAdapter);
@@ -52,25 +58,25 @@ public class ApplicationConfig {
 
     @Bean
     public SubscribeFundUseCase subscribeFundUseCase(
-            ClientAdapter clientAdapter,
-            FundAdapter fundAdapter,
-            TransactionAdapter transactionAdapter,
-            NotificationDispatcher notificationDispatcher) {
-        return new SubscribeFundUseCase(clientAdapter, fundAdapter, transactionAdapter, notificationDispatcher);
+            ClientRepositoryOutputPort clientRepository,
+            FundRepositoryOutputPort fundRepository,
+            TransactionRepositoryOutputPort transactionRepository,
+            NotificationOutputPort notificationPort) {
+        return new SubscribeFundUseCase(clientRepository, fundRepository, transactionRepository, notificationPort);
     }
 
     @Bean
     public CancelFundUseCase cancelFundUseCase(
-            ClientAdapter clientAdapter,
-            FundAdapter fundAdapter,
-            TransactionAdapter transactionAdapter) {
-        return new CancelFundUseCase(clientAdapter, fundAdapter, transactionAdapter);
+            ClientRepositoryOutputPort clientRepository,
+            FundRepositoryOutputPort fundRepository,
+            TransactionRepositoryOutputPort transactionRepository) {
+        return new CancelFundUseCase(clientRepository, fundRepository, transactionRepository);
     }
 
     @Bean
     public GetTransactionHistoryUseCase getTransactionHistoryUseCase(
-            ClientAdapter clientAdapter,
-            TransactionAdapter transactionAdapter) {
-        return new GetTransactionHistoryUseCase(clientAdapter, transactionAdapter);
+            ClientRepositoryOutputPort clientRepository,
+            TransactionRepositoryOutputPort transactionRepository) {
+        return new GetTransactionHistoryUseCase(clientRepository, transactionRepository);
     }
 }
