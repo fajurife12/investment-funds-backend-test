@@ -16,7 +16,7 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
 RUN addgroup -S fund && adduser -S fund -G fund
-USER btg
+USER funds
 
 COPY --from=builder /app/build/libs/funds.jar app.jar
 

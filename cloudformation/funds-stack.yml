@@ -1,0 +1,209 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Funds Platform — EC2 + Docker + MongoDB
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Parameters
+# ─────────────────────────────────────────────────────────────────────────────
+Parameters:
+
+  EnvironmentName:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, staging, prod]
+    Description: Ambiente de despliegue
+
+  InstanceType:
+    Type: String
+    Default: t3.medium
+    AllowedValues: [t3.small, t3.medium, t3.large]
+    Description: Tipo de instancia EC2
+
+  KeyPairName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Key pair para acceso SSH a la instancia
+
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC donde se desplegará la instancia
+
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: Subnet pública para la instancia EC2
+
+  MongoRootUser:
+    Type: String
+    Default: admin
+    NoEcho: true
+    Description: Usuario root de MongoDB
+
+  MongoRootPassword:
+    Type: String
+    NoEcho: true
+    MinLength: 8
+    Description: Contraseña root de MongoDB (mínimo 8 caracteres)
+
+  AppDockerImage:
+    Type: String
+    Description: Imagen Docker de la API (ej. tu-repo/funds:latest)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Resources
+# ─────────────────────────────────────────────────────────────────────────────
+Resources:
+
+  # ── Security Group ──────────────────────────────────────────────────────────
+  AppSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub "Funds API - ${EnvironmentName}"
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+          Description: Acceso HTTP a la API
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+          Description: SSH (restringir a tu IP en producción)
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub "funds-sg-${EnvironmentName}"
+
+  # ── IAM Role ────────────────────────────────────────────────────────────────
+  EC2InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "funds-ec2-role-${EnvironmentName}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+        - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref EC2InstanceRole
+
+  # ── EC2 Instance ─────────────────────────────────────────────────────────────
+  AppInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0c02fb55956c7d316
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyPairName
+      SubnetId: !Ref SubnetId
+      IamInstanceProfile: !Ref EC2InstanceProfile
+      SecurityGroupIds:
+        - !Ref AppSecurityGroup
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 30
+            VolumeType: gp3
+            Encrypted: true
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          set -e
+
+          yum update -y
+
+          amazon-linux-extras install docker -y
+          systemctl enable docker
+          systemctl start docker
+          usermod -aG docker ec2-user
+
+          curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" \
+            -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+
+          mkdir -p /opt/funds
+          cat > /opt/funds/docker-compose.yml << EOF
+          version: "3.9"
+          services:
+            mongodb:
+              image: mongo:7.0
+              restart: always
+              environment:
+                MONGO_INITDB_ROOT_USERNAME: ${MongoRootUser}
+                MONGO_INITDB_ROOT_PASSWORD: ${MongoRootPassword}
+                MONGO_INITDB_DATABASE: funds
+              volumes:
+                - mongo_data:/data/db
+              healthcheck:
+                test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+                interval: 10s
+                timeout: 5s
+                retries: 5
+            funds:
+              image: ${AppDockerImage}
+              restart: always
+              ports:
+                - "8080:8080"
+              environment:
+                MONGODB_URI: mongodb://${MongoRootUser}:${MongoRootPassword}@mongodb:27017/funds?authSource=admin
+                SERVER_PORT: 8080
+              depends_on:
+                mongodb:
+                  condition: service_healthy
+          volumes:
+            mongo_data:
+          EOF
+
+          cd /opt/funds
+          docker-compose up -d
+
+          /opt/aws/bin/cfn-signal -e $? \
+            --stack ${AWS::StackName} \
+            --resource AppInstance \
+            --region ${AWS::Region}
+
+      CreationPolicy:
+        ResourceSignal:
+          Timeout: PT10M
+
+      Tags:
+        - Key: Name
+          Value: !Sub "funds-${EnvironmentName}"
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  # ── Elastic IP ───────────────────────────────────────────────────────────────
+  AppEIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      InstanceId: !Ref AppInstance
+      Domain: vpc
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Outputs
+# ─────────────────────────────────────────────────────────────────────────────
+Outputs:
+
+  ApiUrl:
+    Description: URL base de la API
+    Value: !Sub "http://${AppEIP}:8080/api/v1"
+    Export:
+      Name: !Sub "${AWS::StackName}-ApiUrl"
+
+  InstanceId:
+    Description: ID de la instancia EC2
+    Value: !Ref AppInstance
+
+  PublicIP:
+    Description: IP pública de la instancia
+    Value: !Ref AppEIP
